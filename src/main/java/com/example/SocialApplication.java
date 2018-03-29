@@ -124,8 +124,9 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             // @formatter:off
-            http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-            http.antMatcher("/them").authorizeRequests().anyRequest().authenticated();
+            http.requestMatchers()
+                    .antMatchers("/me", "/them")
+                    .and().authorizeRequests().anyRequest().authenticated();
             // @formatter:on
         }
     }
