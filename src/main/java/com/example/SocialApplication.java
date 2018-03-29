@@ -47,7 +47,10 @@ import org.springframework.web.filter.CompositeFilter;
 
 import javax.servlet.Filter;
 import java.security.Principal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @RestController
@@ -93,12 +96,13 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
         _map6.put("name", "Hiep Dang");
         _map6.put("Job", "Random passerby");
 
-        map.put("Heroku",_map1);
-        map.put("Heroku",_map2);
-        map.put("Heroku",_map3);
-        map.put("Heroku",_map4);
-        map.put("Heroku",_map5);
-        map.put("Heroku",_map6);
+        map.put("Heroku", _map1);
+        map.put("Kiet Tran", _map2);
+        map.put("Anh Vo", _map3);
+        map.put("Le Tuan Anh", _map4);
+        map.put("Trung Nguyen", _map5);
+        map.put("Hiep Dang", _map6);
+        map.put("Exclude me", null);
         return map;
     }
 
