@@ -96,13 +96,18 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
         _map6.put("name", "Hiep Dang");
         _map6.put("Job", "Random passerby");
 
+        Map<String, Object> _map7 = new LinkedHashMap<>();
+        _map7.put("name", "Hiep Dang");
+        _map7.put("Job", "Regular Developer");
+
         map.put("Heroku", _map1);
         map.put("Kiet Tran", _map2);
         map.put("Anh Vo", _map3);
         map.put("Le Tuan Anh", _map4);
         map.put("Trung Nguyen", _map5);
         map.put("Hiep Dang", _map6);
-        map.put("Exclude me", null);
+        map.put("Hiep Dang", _map6);
+        map.put("Exclude me", _map7);
         return map;
     }
 
