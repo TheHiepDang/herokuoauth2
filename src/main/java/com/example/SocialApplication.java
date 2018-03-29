@@ -15,14 +15,6 @@
  */
 package com.example;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.Filter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -53,6 +45,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.CompositeFilter;
 
+import javax.servlet.Filter;
+import java.security.Principal;
+import java.util.*;
+
 @SpringBootApplication
 @RestController
 @EnableOAuth2Client
@@ -60,99 +56,136 @@ import org.springframework.web.filter.CompositeFilter;
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SocialApplication extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	OAuth2ClientContext oauth2ClientContext;
+    @Autowired
+    OAuth2ClientContext oauth2ClientContext;
 
-	@RequestMapping({ "/user", "/me" })
-	public Map<String, String> user(Principal principal) {
-		Map<String, String> map = new LinkedHashMap<>();
-		map.put("name", principal.getName());
-		return map;
-	}
+    @RequestMapping({"/user", "/me"})
+    public Map<String, String> user(Principal principal) {
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("name", principal.getName());
+        return map;
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// @formatter:off
-		http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**").permitAll().anyRequest()
-				.authenticated().and().exceptionHandling()
-				.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
-				.logoutSuccessUrl("/").permitAll().and().csrf()
-				.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-				.addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-		// @formatter:on
-	}
+    @RequestMapping("/them")
+    public Map<String, Object> demo(Principal principal) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        Map<String, Object> _map1 = new LinkedHashMap<>();
+        _map1.put("name", principal.getName());
+        _map1.put("Job", "Hosting Service");
 
-	@Configuration
-	@EnableResourceServer
-	protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-		@Override
-		public void configure(HttpSecurity http) throws Exception {
-			// @formatter:off
-			http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-			// @formatter:on
-		}
-	}
+        Map<String, Object> _map2 = new LinkedHashMap<>();
+        _map2.put("name", "Kiet Tran");
+        _map2.put("Job", "Java Developer");
 
-	public static void main(String[] args) {
-		SpringApplication.run(SocialApplication.class, args);
-	}
+        Map<String, Object> _map3 = new LinkedHashMap<>();
+        _map3.put("name", "Anh Vo");
+        _map3.put("Job", "Java Developer");
 
-	@Bean
-	public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
-		FilterRegistrationBean registration = new FilterRegistrationBean();
-		registration.setFilter(filter);
-		registration.setOrder(-100);
-		return registration;
-	}
+        Map<String, Object> _map4 = new LinkedHashMap<>();
+        _map4.put("name", "Le Tuan Anh");
+        _map4.put("Job", "Java Developer");
 
-	@Bean
-	@ConfigurationProperties("github")
-	public ClientResources github() {
-		return new ClientResources();
-	}
+        Map<String, Object> _map5 = new LinkedHashMap<>();
+        _map5.put("name", "Trung Nguyen");
+        _map5.put("Job", "Java Developer");
 
-	@Bean
-	@ConfigurationProperties("facebook")
-	public ClientResources facebook() {
-		return new ClientResources();
-	}
+        Map<String, Object> _map6 = new LinkedHashMap<>();
+        _map6.put("name", "Hiep Dang");
+        _map6.put("Job", "Random passerby");
 
-	private Filter ssoFilter() {
-		CompositeFilter filter = new CompositeFilter();
-		List<Filter> filters = new ArrayList<>();
-		filters.add(ssoFilter(facebook(), "/login/facebook"));
-		filters.add(ssoFilter(github(), "/login/github"));
-		filter.setFilters(filters);
-		return filter;
-	}
+        map.put("Heroku",_map1);
+        map.put("Heroku",_map2);
+        map.put("Heroku",_map3);
+        map.put("Heroku",_map4);
+        map.put("Heroku",_map5);
+        map.put("Heroku",_map6);
+        return map;
+    }
 
-	private Filter ssoFilter(ClientResources client, String path) {
-		OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(
-				path);
-		OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
-		filter.setRestTemplate(template);
-		UserInfoTokenServices tokenServices = new UserInfoTokenServices(
-				client.getResource().getUserInfoUri(), client.getClient().getClientId());
-		tokenServices.setRestTemplate(template);
-		filter.setTokenServices(tokenServices);
-		return filter;
-	}
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        // @formatter:off
+        http.antMatcher("/**").authorizeRequests().antMatchers("/", "/login**", "/webjars/**").permitAll().anyRequest()
+                .authenticated().and().exceptionHandling()
+                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
+                .logoutSuccessUrl("/").permitAll().and().csrf()
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+        // @formatter:on
+    }
+
+    @Configuration
+    @EnableResourceServer
+    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+        @Override
+        public void configure(HttpSecurity http) throws Exception {
+            // @formatter:off
+            http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
+            http.antMatcher("/them").authorizeRequests().anyRequest().authenticated();
+            // @formatter:on
+        }
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SocialApplication.class, args);
+    }
+
+    @Bean
+    public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+        FilterRegistrationBean registration = new FilterRegistrationBean();
+        registration.setFilter(filter);
+        registration.setOrder(-100);
+        return registration;
+    }
+
+    @Bean
+    @ConfigurationProperties("github")
+    public ClientResources github() {
+        return new ClientResources();
+    }
+
+    @Bean
+    @ConfigurationProperties("facebook")
+    public ClientResources facebook() {
+        return new ClientResources();
+    }
+
+    private Filter ssoFilter() {
+        CompositeFilter filter = new CompositeFilter();
+        List<Filter> filters = new ArrayList<>();
+        filters.add(ssoFilter(facebook(), "/login/facebook"));
+        filters.add(ssoFilter(github(), "/login/github"));
+        filter.setFilters(filters);
+        return filter;
+    }
+
+    private Filter ssoFilter(ClientResources client, String path) {
+        OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(
+                path);
+        OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+        filter.setRestTemplate(template);
+        UserInfoTokenServices tokenServices = new UserInfoTokenServices(
+                client.getResource().getUserInfoUri(), client.getClient().getClientId());
+        tokenServices.setRestTemplate(template);
+        filter.setTokenServices(tokenServices);
+        return filter;
+    }
 
 }
 
 class ClientResources {
 
-	@NestedConfigurationProperty
-	private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
+    @NestedConfigurationProperty
+    private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
 
-	@NestedConfigurationProperty
-	private ResourceServerProperties resource = new ResourceServerProperties();
+    @NestedConfigurationProperty
+    private ResourceServerProperties resource = new ResourceServerProperties();
 
-	public AuthorizationCodeResourceDetails getClient() {
-		return client;
-	}
+    public AuthorizationCodeResourceDetails getClient() {
+        return client;
+    }
 
-	public ResourceServerProperties getResource() {
-		return resource;
-	}
+    public ResourceServerProperties getResource() {
+        return resource;
+    }
 }
