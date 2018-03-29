@@ -106,8 +106,8 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
         map.put("Le Tuan Anh", _map4);
         map.put("Trung Nguyen", _map5);
         map.put("Hiep Dang", _map6);
-        map.put("Hiep Dang", _map6);
-        map.put("Exclude me", _map7);
+        map.put("HExclude me", null);
+        map.put("Dang Hiep", _map7);
         return map;
     }
 
